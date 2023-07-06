@@ -1,11 +1,17 @@
 "use client";
 import React, { useState } from "react";
-import { Circle, GoogleMap, useJsApiLoader } from "@react-google-maps/api";
+import {
+  Circle,
+  GoogleMap,
+  useJsApiLoader,
+  Autocomplete,
+} from "@react-google-maps/api";
 import "dotenv";
 import { Button } from "@/components/ui/Button";
 import axiosClient from "@/utils/api";
 import { toast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
+import { Input } from "@/components/ui/Input";
 
 const center = { lat: -31.946492498979126, lng: 115.93577906638669 };
 
@@ -38,6 +44,8 @@ export default function Map() {
   });
 
   const [showCircle, setShowCircle] = useState(false);
+  const [autoComplete, setAutoComplete] =
+    useState<google.maps.places.Autocomplete | null>(null);
   const [circle, setCircle] = useState<google.maps.Circle | null>(null);
   const [circleCenter, setCircleCenter] = useState(center);
   const [circleRadius, setCircleRadius] = useState(radius);
@@ -140,9 +148,33 @@ export default function Map() {
 
   return isLoaded ? (
     <div className="w-[96%] md:w-full mx-auto flex flex-col gap-2 px-0 md:px-2">
+      <Autocomplete
+        onLoad={(ac) => {
+          setAutoComplete(ac);
+        }}
+        onPlaceChanged={() => {
+          if (autoComplete) {
+            const place = autoComplete.getPlace();
+            const lat = place.geometry?.location?.lat();
+            const lng = place.geometry?.location?.lng();
+
+            if (lat && lng) {
+              setShowCircle(true);
+              setCircleCenter({ ...circleCenter, lat, lng });
+            }
+          }
+        }}
+        types={["address"]}
+        restrictions={{ country: "au" }}
+      >
+        <Input
+          placeholder="Search for a street"
+          type="text"
+        />
+      </Autocomplete>
       <GoogleMap
         mapContainerStyle={containerStyle}
-        center={center}
+        center={circleCenter}
         zoom={16}
         onClick={handleClick}
       >
