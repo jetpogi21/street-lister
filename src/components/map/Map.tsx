@@ -1,11 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import {
-  Circle,
-  GoogleMap,
-  Libraries,
-  useJsApiLoader,
-} from "@react-google-maps/api";
+import { Circle, GoogleMap, useJsApiLoader } from "@react-google-maps/api";
 import "dotenv";
 import { Button } from "@/components/ui/Button";
 import axiosClient from "@/utils/api";
@@ -26,6 +21,14 @@ const fetchData = async (circleRadius: number, lat: number, lng: number) => {
 
   return data;
 };
+
+type Libraries = (
+  | "drawing"
+  | "geometry"
+  | "localContext"
+  | "places"
+  | "visualization"
+)[];
 
 export default function Map() {
   const { isLoaded } = useJsApiLoader({
