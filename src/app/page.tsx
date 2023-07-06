@@ -7,7 +7,7 @@ export const metadata = {
 
 export default function Page() {
   return (
-    <div className="flex flex-1 w-full max-w-screen-lg gap-20 mx-auto">
+    <div className="flex flex-1 w-full max-w-screen-lg gap-16 mx-auto">
       <Map />
     </div>
   );
